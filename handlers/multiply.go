@@ -12,7 +12,7 @@ func Multiply(w http.ResponseWriter, r *http.Request) {
 	m, err := matrix.New(r)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(fmt.Sprintf("error %s", err.Error())))
+		w.Write([]byte(fmt.Sprintf("Error: %s", err.Error())))
 		return
 	}
 

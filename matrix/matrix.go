@@ -31,14 +31,14 @@ func New(r *http.Request) (*Matrix, error) {
 	// Validate if the CSV is a valid square matrix of integers.
 	for _, row := range records {
 		if len(row) != len(records) {
-			return nil, fmt.Errorf("Not a square matrix")
+			return nil, fmt.Errorf("not a square matrix")
 		}
 
 		vals := []int{}
 		for _, v := range row {
 			val, err := strconv.Atoi(v)
 			if err != nil {
-				return nil, fmt.Errorf("Error converting to int: %v", err)
+				return nil, fmt.Errorf("convertion error '%v'", err)
 			}
 			vals = append(vals, val)
 		}
@@ -50,7 +50,16 @@ func New(r *http.Request) (*Matrix, error) {
 }
 
 func (m *Matrix) Invert() *Matrix {
-	return nil
+
+	for i := 0; i < len(m.m); i++ {
+		for j := i + 1; j < len(m.m[i]); j++ {
+			t := m.m[i][j]
+			m.m[i][j] = m.m[j][i]
+			m.m[j][i] = t
+		}
+	}
+
+	return m
 }
 
 func (m *Matrix) Sum() int {
