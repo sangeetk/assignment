@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"net/http"
 
 	"assignment/handlers"
@@ -10,6 +11,8 @@ import (
 //		go run .
 // Send request with:
 //		curl -F 'file=@/path/matrix.csv' "localhost:8080/echo"
+// Test with
+//      go test ./...
 
 func main() {
 
@@ -19,5 +22,5 @@ func main() {
 	http.HandleFunc("/sum", handlers.Sum)
 	http.HandleFunc("/multiply", handlers.Multiply)
 
-	http.ListenAndServe(":8080", nil)
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }

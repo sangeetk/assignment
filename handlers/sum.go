@@ -8,9 +8,18 @@ import (
 	"assignment/matrix"
 )
 
+// Sum - Return the sum of the integers in the matrix
+//
+//	Input:
+//	    1,2,3
+//	    4,5,6
+//	    7,8,9
+//
+//	Output:
+//	    45
 func Sum(w http.ResponseWriter, r *http.Request) {
 
-	// Parse CSV from the request body.
+	// Read file from the request body.
 	file, _, err := r.FormFile("file")
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -19,6 +28,7 @@ func Sum(w http.ResponseWriter, r *http.Request) {
 	}
 	defer file.Close()
 
+	// Parse CSV records from the file
 	records, err := csv.NewReader(file).ReadAll()
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -26,6 +36,7 @@ func Sum(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Parse CSV and create a squre Matrix
 	m, err := matrix.Parse(records)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)

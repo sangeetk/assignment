@@ -8,9 +8,20 @@ import (
 	"assignment/matrix"
 )
 
+// Invert - Return the matrix as a string in matrix format where the columns and rows are inverted
+//
+//	Input:
+//	    1,2,3
+//	    4,5,6
+//	    7,8,9
+//
+//	Output:
+//	    1,4,7
+//	    2,5,8
+//	    3,6,9
 func Invert(w http.ResponseWriter, r *http.Request) {
 
-	// Parse CSV from the request body.
+	// Read file from the request body.
 	file, _, err := r.FormFile("file")
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -19,6 +30,7 @@ func Invert(w http.ResponseWriter, r *http.Request) {
 	}
 	defer file.Close()
 
+	// Parse CSV records from the file
 	records, err := csv.NewReader(file).ReadAll()
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -26,6 +38,7 @@ func Invert(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Parse CSV and create a squre Matrix
 	m, err := matrix.Parse(records)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
