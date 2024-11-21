@@ -11,6 +11,11 @@ type Matrix [][]int
 // Checks if the matrix square
 func isSquare(records [][]string) bool {
 
+	// Check for zero size matrix
+	if len(records) == 0 {
+		return false
+	}
+
 	// Check if number of values in each row is same as total number of rows.
 	for _, record := range records {
 		if len(record) != len(records) {
