@@ -1,38 +1,24 @@
 package matrix
 
 import (
+	"errors"
 	"fmt"
 	"strconv"
+)
+
+var (
+	ErrorInvalidIntMatrix = errors.New("invalid int matrix")
+	ErrorZeroSizeMatrix   = errors.New("zero size matrix")
+	ErrorNonSquareMatrix  = errors.New("not a square matrix")
 )
 
 // A square matrix of int.
 type Matrix [][]int
 
-// Checks if the matrix square
-func isSquare(records [][]string) bool {
-
-	// Check for zero size matrix
-	if len(records) == 0 {
-		return false
-	}
-
-	// Check if number of values in each row is same as total number of rows.
-	for _, record := range records {
-		if len(record) != len(records) {
-			return false
-		}
-	}
-	return true
-}
-
 // Parses CSV records and creates a square matrix of int values
-func Parse(records [][]string) (*Matrix, error) {
+func Parse(records [][]string) (Matrix, error) {
 
 	var m Matrix
-
-	if !isSquare(records) {
-		return nil, fmt.Errorf("not a square matrix")
-	}
 
 	// Validate & Convert CSV into matrix of integers.
 	for _, record := range records {
@@ -42,17 +28,30 @@ func Parse(records [][]string) (*Matrix, error) {
 			n, err := strconv.Atoi(v)
 			if err != nil {
 				// Invalid (non integer) characters
-				return nil, fmt.Errorf("convertion error '%v'", err)
+				return nil, ErrorInvalidIntMatrix
 			}
 			row = append(row, n)
 		}
 		m = append(m, row)
 	}
 
+	// Check for zero size matrix
+	if len(m) == 0 {
+		return nil, ErrorZeroSizeMatrix
+	}
+
+	// Check if number of values in each row is same as total number of rows.
+	for _, row := range m {
+		if len(row) != len(m) {
+			return nil, ErrorNonSquareMatrix
+		}
+	}
+
 	// Return int matrix
-	return &m, nil
+	return m, nil
 }
 
+// Invert the matrix by swapping upper & lower triangular values
 func (m Matrix) Invert() Matrix {
 
 	for i := 0; i < len(m); i++ {
@@ -66,6 +65,7 @@ func (m Matrix) Invert() Matrix {
 	return m
 }
 
+// Returns the sum of all values in a matrix
 func (m Matrix) Sum() int {
 	sum := 0
 
@@ -78,6 +78,7 @@ func (m Matrix) Sum() int {
 	return sum
 }
 
+// Returns the product of all values in a matrix
 func (m Matrix) Multiply() int {
 	product := 1
 
@@ -90,6 +91,7 @@ func (m Matrix) Multiply() int {
 	return product
 }
 
+// Return the matrix as string in 2D matrix form using csv
 func (m Matrix) String() string {
 	var str string
 
@@ -99,6 +101,7 @@ func (m Matrix) String() string {
 			case j < len(row)-1:
 				str += fmt.Sprintf("%d,", n)
 			default:
+				// Don't add ',' after last value in the row
 				str += fmt.Sprintf("%d", n)
 			}
 		}
@@ -110,6 +113,7 @@ func (m Matrix) String() string {
 	return str
 }
 
+// Return the matrix in flattened form as csv string
 func (m Matrix) Flatten() string {
 	var str string
 
